@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, flash
 from app.custom_modules.api_functions import get_crypto_by_abbreviation
 
 import os
@@ -44,7 +44,8 @@ def show_crypto():
     # van de opgehaalde dataframe maken we van de kolom currency een list
     currencylist = currency_df_voor_currencylist['currency'].to_list()
 
-    # raise ValueError()
+    # Weergeven zaken
+    zaken = Crypto.query.all()
   
     if request.method == 'POST':
         currency = request.form.get('currency').upper()
@@ -65,11 +66,14 @@ def show_crypto():
         
         db.session.add(new_currency)
         db.session.commit()
+        # Weergeven zaken
+        zaken = Crypto.query.all()
+        flash("Zaak succesvol toegevoegd", "alert alert-success")
 
-        return render_template('show_crypto.html', crypto=crypto, amount=amount, currencylist=currencylist)
+        return render_template('show_crypto.html', crypto=crypto, amount=amount, currencylist=currencylist, zaken=zaken)
 
         
 
     else:
-        return render_template('show_crypto.html', currencylist=currencylist)
+        return render_template('show_crypto.html', currencylist=currencylist, zaken=zaken)
 
