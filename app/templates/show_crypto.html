@@ -3,7 +3,7 @@
 
 <form class="form-control" method="POST" action="/" role="form">
 <div class="input-group mb-3">
-<input type="text" class="form-control" placeholder="Zaaknaam" aria-label="zaaknaam" name='zaaknaam'>
+<input type="text" class="form-control" placeholder="zaaknummer" aria-label="zaaknummer" name='zaaknummer'>
 </div>
 
 <div class="input-group mb-3">
@@ -12,7 +12,6 @@
 
 <div class="input-group mb-3">
     <select name="currency" class="form-select" aria-label="Default select example" placeholder="Currency">
-    {% print(currencylist) %}
     {% for currency_selection in currencylist %}
     <option value={{ currency_selection }}>{{currency_selection}}</option>
     {% endfor %}

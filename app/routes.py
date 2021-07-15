@@ -1,19 +1,21 @@
-from flask import Flask, render_template, request
-from custom_modules.api_functions import get_crypto_by_abbreviation
-from dotenv import load_dotenv
+from flask import render_template, request
+from app.custom_modules.api_functions import get_crypto_by_abbreviation
+
 import os
 import sqlite3
 import pandas as pd
+from datetime import datetime
+from app import app, db
+from app.models import Crypto
+from app.forms import CryptoForm
 
-load_dotenv()
 
-app = Flask(__name__)
-app.secret_key=os.environ.get('SECRET_KEY')
+
 
 @app.route('/', methods=['POST','GET'])
 def show_crypto():
     # database verbinding aanmaken, maakt de database aan als deze niet bestaat
-    con = sqlite3.connect('database.db')
+    con = sqlite3.connect('cur_database.db')
     cursor = con.cursor()
     
     # maakt de noodzakelijke tabel aan als deze nog niet bestaat
@@ -22,6 +24,8 @@ def show_crypto():
             (currency text)
             ''')
     con.commit()
+
+    
 
     # we maken een currency lijst aan die we aan een tabel toevoegen in de database
     # we kunnen als we tijd over hebben iets maken dat we er een currency aan toe kunnen voegen
@@ -49,10 +53,23 @@ def show_crypto():
 
         crypto = get_crypto_by_abbreviation(currency)
         amount = float(quantity) * crypto['price']
+        
+
+        form = CryptoForm()
+        new_currency = Crypto(zaaknaam = form.zaaknummer.data,
+                              verdachte = form.verdachte.data,
+                              currency  = form.currency.data,
+                              aantal  = form.quantity.data,
+                              datum_tijd = str(datetime.now()),
+                              totale_waarde    = amount)
+        
+        db.session.add(new_currency)
+        db.session.commit()
+
         return render_template('show_crypto.html', crypto=crypto, amount=amount, currencylist=currencylist)
+
+        
 
     else:
         return render_template('show_crypto.html', currencylist=currencylist)
 
-if __name__ == '__main__':
-    app.run()
