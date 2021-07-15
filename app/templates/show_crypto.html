@@ -1,0 +1,87 @@
+{% extends "layouts.html" %}
+{% block content %}
+
+<form class="form-control" method="POST" action="/" role="form">
+<div class="input-group mb-3">
+<input type="text" class="form-control" placeholder="zaaknummer" aria-label="zaaknummer" name='zaaknummer'>
+</div>
+
+<div class="input-group mb-3">
+<input type="text" class="form-control" placeholder="Verdachte" aria-label="verdachte" name="verdachte">
+</div>
+
+<div class="input-group mb-3">
+    <select name="currency" class="form-select" aria-label="Default select example" placeholder="Currency">
+    {% for currency_selection in currencylist %}
+    <option value={{ currency_selection }}>{{currency_selection}}</option>
+    {% endfor %}
+    </select>
+</div>
+
+<div class="input-group mb-3">
+<input type="number" class="form-control" placeholder="Aantal" aria-label="aantal" name="quantity">
+</div>
+
+<button class='btn btn-success' type='submit' > Voeg toe </button>
+
+</form>
+
+<table class="table">
+    <thead>
+        <th>
+            Zaaknaam:
+        </th>
+        <th>
+            Verdachte:
+        </th>
+        <th>
+            Currency:
+        </th>
+        <th>
+            Aantal:
+        </th>
+        <th>
+            Totale waarde:
+        </th>
+        <th>
+            Datum Tijd:
+        </th>
+    </thead>
+    <tbody>
+        {% for zaak in zaken %}
+        <tr>
+            <td>
+                {{ zaak.zaaknaam }}
+            </td>
+            <td>
+                {{ zaak.verdachte }}
+            </td>
+            <td>
+                {{ zaak.currency }}
+            </td>
+            <td>
+                {{ zaak.aantal }}
+            </td>
+            <td>
+                {{ "€{:,.2f}".format(zaak.totale_waarde)}}
+            </td>
+            <td>
+                {{ zaak.datum_tijd }}
+            </td>
+        </tr>
+        
+        
+        
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% if crypto is defined %}
+<h2> Prijs: {{ "€{:,.2f}".format(crypto.price) }}</h2>
+<h2> Totaal: {{ "€{:,.2f}".format(amount) }}</h2>
+{% else %}
+{% endif %}
+
+{% endblock %}
